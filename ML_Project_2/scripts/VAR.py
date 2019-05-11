@@ -204,16 +204,8 @@ def synthetic_test(P,N,T,L, number_of_tests, lambda_list ,model = None):
     return Final_std, Final_metrics, Final_accuracies
 
 def hypeOpt_elastic_synth(P,N,T,L, number_of_tests, lambda_1, lambda_2):
-    """ run tests using artificial data
-    Inputs :
-        P = number of patient files
-        N =  number of nodes
-        T = time 
-        L = lag
-        lambda_1 / lambda_2 = lambdas to test
-        number_of_tests = number_of_tests
-    Outputs:
-        accuracy
+    """ Function that is called to optimize the hyperparameters
+    of the elastic net function
     """
 
     test_list = []

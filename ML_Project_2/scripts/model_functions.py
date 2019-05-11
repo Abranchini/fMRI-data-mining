@@ -80,14 +80,14 @@ def MSE(actual, predicted, err = []):
     return mean_squared_error
 
 def compute_gradient(X_train, y, beta, l1_ratio, alpha):
-    """Compute the gradient
+    """Compute the gradient for the own implementation elastic net
     """
     err = y - X_train.dot(beta)
     grad = (1/(2*len(y))) * X_train.T.dot(err) + alpha*l1_ratio*np.sign(beta) + alpha*(1-l1_ratio)*0.5*beta
     return grad, err
 
 def elastic_net(iterations, gamma, X_train, y_train, l1,l2, alpha):
-    """Elastic net
+    """First try of own implementation of elastic net
     """
 
     # Intiate variables

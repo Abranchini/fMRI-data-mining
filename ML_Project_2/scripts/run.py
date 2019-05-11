@@ -44,7 +44,7 @@ X_withoutNode=np.zeros((M,(N-1)*L)) # The matrix X contains all the nodes, but w
 
 for n in range(0,N):
     X_withoutNode=np.concatenate((X[:,0:n*L],X[:,(n+1)*L:]),axis=1) # The matrix X contains all the nodes, but we are not interested in self causality
-    coef,msee=elasticNet(X_withoutNode,y[n],0.499482018042742,0.209672573169101) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, 1)# Lasso regression. Note that it returns the coefficients vector of size NxL
+    coef,msee=elasticNet(X_withoutNode,y[n],0.499482018042742,0.209672573169101) # Elastic net regression. Note that it returns the coefficients vector of size NxL
     matCoef=reshapeCoefficients(coef,N-1,L) #Reshape coefficients onto a matrix 
     index_nodes=np.concatenate((np.arange(0,n,+1),np.arange(n+1,N,+1))) # Put the results in the adjacency matrix.     
     coefficients[:,index_nodes,n]=matCoef.T  # we are computing the causality from other nodes to node n

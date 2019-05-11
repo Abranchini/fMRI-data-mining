@@ -1,9 +1,13 @@
+# This file is the main script to run the optimization of parameters for the elastic net
+# but can be adapted to other functions
+
 # general imports
 import numpy as np ; import csv
 import GPyOpt ; import GPy
 import sklearn ; import importlib ; import time
 import matplotlib.pyplot as plt ; import seaborn as sns
 
+# This must be changed according to ones directory
 import os ; import sys
 dir_path = os.path.dirname(os.path.realpath("__file__"))
 sys.path.append(dir_path + "/ML_Project_2/scripts/")
