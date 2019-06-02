@@ -44,11 +44,13 @@ acc = hypeOpt_elastic_synth(P,N,T,L, 50, lambda_1, lambda_2)
 yR = acc
 y_output.append(yR)
 Y_step = np.reshape(y_output,(-1,1))
-domain =[{'name': 'lambda_1', 'type': 'continuous', 'domain': (0,0.5)},\
-    {'name': 'lambda_2', 'type': 'continuous', 'domain': (0,0.5)}]
+domain =[{'name': 'lambda_1', 'type': 'continuous', 'domain': (0.1,6)},\
+    {'name': 'lambda_2', 'type': 'continuous', 'domain': (0.2,5)}]
 
 
-file_directory = "/media/abranches/Main/University/EPFL/Project_MPI/ML_Project_2/tests/"
+# file_directory = "/media/abranches/Main/University/EPFL/Project_MPI/ML_Project_2/tests/"
+# Windows save directory
+file_directory = "D:/University/EPFL/Project_MPI/fMRI-data-mining/ML_Project_2/tests/"
 
 # open file to write tests
 date = time.strftime("%Y-%m-%d_%H_%M_%S",time.gmtime())
@@ -77,7 +79,7 @@ while current_iter < iter_count:
     try:
         acc = hypeOpt_elastic_synth(P,N,T,L, 50, lambda_1, lambda_2)
         end = time.time()
-        print("Time to run GP {}".format(end-start))
+        print("Time to run {}".format(end-start))
 
         yR = acc
         yR_write = yR

@@ -23,7 +23,7 @@ from model_functions import *
 from graphic_functions import *
 
 # define lambdas to use
-lambda_list = np.arange(0.2,10,0.2)
+lambda_list = np.arange(0,1,0.05)
 
 # initialize values
 P = 1
@@ -32,12 +32,12 @@ T = 100
 L = 3
 
 # make tests using ridge
-RegStd, RegMetrics, RegAcc = synthetic_test(P,N,T,L, number_of_tests = 5, 
+RegStd, RegMetrics, RegAcc = synthetic_test(P,N,T,L, number_of_tests = 20, 
                                 lambda_list = lambda_list ,model = ridgeRegression)
 
 # make tests using lasso
-LaStd ,LaMetrics, LaAcc = synthetic_test(P,N,T,L, number_of_tests = 5, 
-                                lambda_list = lambda_list ,model = lassoRegression)
+# LaStd ,LaMetrics, LaAcc = synthetic_test(P,N,T,L, number_of_tests = 5, 
+#                                 lambda_list = lambda_list ,model = lassoRegression)
 
 # get x-axis labels
 legend = []
@@ -50,10 +50,10 @@ for l in lambda_list:
 plt.figure(figsize=(20,10))
 # plot bars
 sns.barplot(legend,RegAcc,color='g',alpha = 0.5)#,label = "Ridge Regression")
-sns.barplot(legend,LaAcc,color='b',alpha = 0.5)#, label = "Lasso Regression")
+# sns.barplot(legend,LaAcc,color='b',alpha = 0.5)#, label = "Lasso Regression")
 # plot erros
-plt.errorbar(x=legend,y=LaAcc , yerr=LaStd, xerr=None,color='b')
-plt.errorbar(x=legend,y=RegAcc , yerr=LaStd, xerr=None,color='g')
+# plt.errorbar(x=legend,y=LaAcc , yerr=LaStd, xerr=None,color='b')
+plt.errorbar(x=legend,y=RegAcc , yerr=RegStd, xerr=None,color='g')
 
 # define design of image
 plt.xlabel('Lambdas value',size = 20)

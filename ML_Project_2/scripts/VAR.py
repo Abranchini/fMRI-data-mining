@@ -160,8 +160,9 @@ def synthetic_test(P,N,T,L, number_of_tests, lambda_list ,model = None):
             threshold = 0
             for n in range(0,N):
                 # execute model
+
                 X_withoutNode=np.concatenate((X[:,0:n*L],X[:,(n+1)*L:]),axis=1)
-                coef,msee=elasticNet(X_withoutNode,y[n],0.5,l) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l)#lassoRegression(X_withoutNode,y[n],l)
+                coef,msee=elasticNet(X_withoutNode,y[n], 1-l, 1 - (1-l))#,0.499482018042742,0.209672573169101) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l)#lassoRegression(X_withoutNode,y[n],l)
                 matCoef=reshapeCoefficients(coef,N-1,L) 
 
                 # choose max of the different coefficient matrices
