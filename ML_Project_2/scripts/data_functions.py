@@ -4,6 +4,8 @@ import numpy as np
 import os
 import scipy.io as scp
 from sklearn.metrics.pairwise import euclidean_distances
+import os
+
 
 def obtainData(): # First DB. Finally not used since it was too noisy.
     # Gets the data from the matlab files
@@ -25,8 +27,9 @@ def obtainData2():
     # Gets the data from the matlab files from the parcellated data with 90 regions
     # Returns an array with shape S (number of files)xT(number of time samples)xN(number of nodes).
     data=[]
-    #directory='../data/'
-    directory='/media/abranches/Main/University/EPFL/Project_MPI/ML_Project_2/data'#'D:/University/EPFL/Project_MPI/ML_Project_2/data'
+    dir = os.path.dirname(__file__)
+    relPath = '../data'
+    directory = os.path.join(dir, relPath)
     for file in os.listdir(directory):
         filename = file
         if filename.startswith("Activity_avr"): 
@@ -53,7 +56,9 @@ def obtainICAPs():
 def getNodesPosition():
     # Returns the node positions
     nodesPositions=[]
-    filename = '../data/nodesCenters.mat'
+    dir = os.path.dirname(__file__)
+    relPath = '/data/nodesCenters.mat'
+    filename = os.path.join(dir, relPath)
     f = scp.loadmat(filename)
     nodesPositions=f.get('centers')
     return nodesPositions

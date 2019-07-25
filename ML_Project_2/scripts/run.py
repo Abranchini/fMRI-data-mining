@@ -56,3 +56,24 @@ plotCoefficients(coefMatrix,N)
 
 # Other results
 # To get the rest of the plots in the report execute visualize_brain.mat in matlab
+
+# Apply kmeans to the results
+# Threshold
+threshold=0.2
+adjacencyMat = (coefMatrix > threshold) 
+plotCoefficients(adjacencyMat,N)
+a=np.where(adjacencyMat==1)
+nodes=[]
+for i in range(0,len(a[0])):
+    nodes.append([a[0][i],a[1][i]])
+kmeans = KMeans(n_clusters=5).fit(nodes)
+labels=kmeans.predict(nodes)
+colors=['red','green','cyan','yellow','blue']
+col=[]
+for row in labels:
+    col.append(colors[row])
+centroids=kmeans.cluster_centers_
+plt.figure()
+plt.scatter(a[0],a[1], c=col, s=60)
+plt.show()
+

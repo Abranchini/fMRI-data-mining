@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet, SGDRegressor, MultiTaskElasticNet
 from sklearn.metrics import mean_squared_error
 from sklearn.datasets import make_regression
+from sklearn.cluster import KMeans
 
 def leastSquares(X,y):
     linReg_coef = [] # weights to be optimized
@@ -106,3 +107,8 @@ def elastic_net(iterations, gamma, X_train, y_train, l1,l2, alpha):
     
 
     return beta, mse 
+
+    ## KMEANS
+'''def apply_kmeans(data, numberClusters):
+    kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
+return '''

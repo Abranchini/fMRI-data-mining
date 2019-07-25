@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 #sys.path.append('D:/University/EPFL/Project_MPI/ML_Project_2/scripts')
-sys.path.append('/media/abranches/Main/University/EPFL/Project_MPI/ML_Project_2/scripts')
+sys.path.append('/../ML_Project_2/scripts')
 # function imports
 import data_functions, model_functions, graphic_functions, VAR
 # Reupdate functions

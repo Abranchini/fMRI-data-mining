@@ -58,8 +58,8 @@ def plotGraphCircle(A): # Plots circular graph from the adjacency matrix
 def plotCoefficients(coef,N):
     #fig, ax = plt.subplots()
     plt.imshow(coef, extent=[0, N-1, 0, N-1],cmap="jet")
-    plt.colorbar()
-    plt.show()
+    #plt.colorbar()
+    #plt.show()
     # plt.savefig("Coefs" + '.png', bbox_inches='tight')
 
     
