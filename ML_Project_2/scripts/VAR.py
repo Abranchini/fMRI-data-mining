@@ -41,7 +41,6 @@ def generate_C(L, N):
                 C[l][i][j]=np.random.uniform(-0.8,0.8)
     return C
 
-
 def generate_A_random_coefficient(P,L,N, feedback = False):
     '''Function that creates the final A matrices (that are as many as the lags we consider)
     Inputs:
