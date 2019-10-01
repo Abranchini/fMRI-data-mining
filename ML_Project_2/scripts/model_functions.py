@@ -41,7 +41,7 @@ def elasticNet(X,y,lambda_1,lambda_2):
     alpha = lambda_1 + lambda_2
     l1_ratio = lambda_1 / (lambda_1 + lambda_2)
     elNet=ElasticNet(alpha=alpha, copy_X=True, fit_intercept=True, l1_ratio=l1_ratio,
-    max_iter=10000000, normalize=False, positive=False, precompute=False,
+    max_iter=30000, normalize=False, positive=False, precompute=False,
     random_state=0, selection='cyclic', tol=0.0001, warm_start=False)
     elNet.fit(X, y)
     y_pred=elNet.predict(X)
@@ -108,7 +108,7 @@ def elastic_net(iterations, gamma, X_train, y_train, l1,l2, alpha):
 
     return beta, mse 
 
-    ## KMEANS
+## KMEANS
 '''def apply_kmeans(data, numberClusters):
     kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
 return '''
