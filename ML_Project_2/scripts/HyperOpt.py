@@ -34,18 +34,22 @@ L = 4
 lambda_1 = 0.3 ; lambda_2 = 0.9
 y_output = [] ; acquisition_type = "LCB"
 
-iter_count = 400
+iter_count = 2000
 current_iter = 0
-X_step = np.array([[0.1, 0.9]])
 
-# make tests using ridge
-acc, std = hypeOpt_elastic_synth(P,N,T,L, 20, lambda_1, lambda_2)
+random_search = True
 
-yR = acc
-y_output.append(yR)
-Y_step = np.reshape(y_output,(-1,1))
-domain =[{'name': 'lambda_1', 'type': 'continuous', 'domain': (0.1,3)},\
-    {'name': 'lambda_2', 'type': 'continuous', 'domain': (0.1,3)}]
+if random_search == False:
+    X_step = np.array([[0.1, 0.9]])
+
+    # make tests using ridge
+    acc, std = hypeOpt_elastic_synth(P,N,T,L, 20, lambda_1, lambda_2)
+
+    yR = acc
+    y_output.append(yR)
+    Y_step = np.reshape(y_output,(-1,1))
+    domain =[{'name': 'lambda_1', 'type': 'continuous', 'domain': (0.1,3)},\
+        {'name': 'lambda_2', 'type': 'continuous', 'domain': (0.1,3)}]
 
 
 file_directory = "/media/abranches/Main/University/EPFL/Project_MPI/fMRI-data-mining/ML_Project_2/tests/"
@@ -55,44 +59,55 @@ file_directory = "/media/abranches/Main/University/EPFL/Project_MPI/fMRI-data-mi
 # open file to write tests
 date = time.strftime("%Y-%m-%d_%H_%M_%S",time.gmtime())
 with open(file_directory + date + "_" + acquisition_type + ".csv", "w") as OV_file:
-    writer = csv.DictWriter(OV_file, fieldnames = ["lambda_1", "lambda_2","y"])
+    writer = csv.DictWriter(OV_file, fieldnames = ["lambda_1", "lambda_2","y", "std"])
 
     # writer = csv.DictWriter(OV_file, fieldnames = ["lengthscale","variance","y"])
 
     writer.writeheader()
 
 
+
 while current_iter < iter_count:
-    start = time.time()
-    bo_step = GPyOpt.methods.BayesianOptimization(f = None, domain = domain, X = X_step, Y = Y_step, 
-                                            acquisition_type=acquisition_type,
-                                            maximize = True,exploration_weight=1000,exact_feval=True)
-    
-    x_next = bo_step.suggest_next_locations()
-    end = time.time()
-    print("Time to suggest new location {}".format(end-start))
-
-    lambda_1 = x_next[0][0]
-    lambda_2 = x_next[0][1]
-
-    start = time.time()
-    try:
-        acc , std= hypeOpt_elastic_synth(P,N,T,L, 20, lambda_1, lambda_2)
+    if random_search == False:
+        start = time.time()
+        bo_step = GPyOpt.methods.BayesianOptimization(f = None, domain = domain, X = X_step, Y = Y_step, 
+                                                acquisition_type=acquisition_type,
+                                                maximize = True,exploration_weight=1000,exact_feval=True)
+        
+        x_next = bo_step.suggest_next_locations()
         end = time.time()
-        print("Time to run {}".format(end-start))
+        print("Time to suggest new location {}".format(end-start))
+
+        lambda_1 = x_next[0][0]
+        lambda_2 = x_next[0][1]
+
+        start = time.time()
+        try:
+            acc , std= hypeOpt_elastic_synth(P,N,T,L, 20, lambda_1, lambda_2)
+            end = time.time()
+            print("Time to run {}".format(end-start))
+
+            yR = acc
+            yR_write = yR
+        except Exception as e:
+            yR = np.inf
+            yR_write = e
+
+        y_next = yR
+
+        X_step = np.vstack((X_step, x_next))
+        Y_step = np.vstack((Y_step, y_next))
+    
+    else:
+        lambda_1 = np.random.uniform(0.01,5)
+        lambda_2 = np.random.uniform(0.01,5)
+        acc , std= hypeOpt_elastic_synth(P,N,T,L, 20, lambda_1, lambda_2)
 
         yR = acc
         yR_write = yR
-    except Exception as e:
-        yR = np.inf
-        yR_write = e
 
-    y_next = yR
     print("\n Iteration : {}/{}. lamba_1 :{}. lambda_2 : {}. Accuracy : {}".format(\
         current_iter, iter_count , lambda_1, lambda_2, acc))
-
-    X_step = np.vstack((X_step, x_next))
-    Y_step = np.vstack((Y_step, y_next))
 
     with open(file_directory + date + "_" + acquisition_type + ".csv", "a") as OV_file:
         writer = csv.writer(OV_file)

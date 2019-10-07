@@ -136,70 +136,71 @@ def synthetic_test(P,N,T,L, number_of_tests, lambda_list ,model = None):
     
     
     final_met_counter = 0
-    for l in lambda_list:
-        temp_acc = np.zeros(number_of_tests)
-        for test in range(number_of_tests):
-            # Generate some data and an adjacency matrix
-            C,A_i_j= generateXdata_random(P,N,T,L, function_set = generate_A_random_coefficient)
+    for l1 in lambda_list:
+        for l2 in lambda_list:
+            temp_acc = np.zeros(number_of_tests)
+            for test in range(number_of_tests):
+                # Generate some data and an adjacency matrix
+                C,A_i_j= generateXdata_random(P,N,T,L, function_set = generate_A_random_coefficient)
 
-            # Extract dimensions from the file 
-            T=C.shape[1] # T: number of time samples
-            N=C.shape[2] # N: number of nodes
-            P=C.shape[0] # P: number of files
-            M = (T-L)*P
-            # Data reshaping
-            X,y=getXYfromData(C,T,L,P,N)
+                # Extract dimensions from the file 
+                T=C.shape[1] # T: number of time samples
+                N=C.shape[2] # N: number of nodes
+                P=C.shape[0] # P: number of files
+                M = (T-L)*P
+                # Data reshaping
+                X,y=getXYfromData(C,T,L,P,N)
 
-            # Model regression and mean coefficients computation
-            # initialize needed matrices
-            coefMatrix=np.zeros((N,N))
-            coefficients=np.zeros((L,N,N))
-            X_withoutNode=np.zeros((M,(N-1)*L))
-            
-            threshold = 0
-            for n in range(0,N):
-                # execute model
+                # Model regression and mean coefficients computation
+                # initialize needed matrices
+                coefMatrix=np.zeros((N,N))
+                coefficients=np.zeros((L,N,N))
+                X_withoutNode=np.zeros((M,(N-1)*L))
+                
+                threshold = 0
+                for n in range(0,N):
+                    # execute model
 
-                X_withoutNode=np.concatenate((X[:,0:n*L],X[:,(n+1)*L:]),axis=1)
-                coef,msee=elasticNet(X_withoutNode,y[n], l, (1-l))#,0.499482018042742,0.209672573169101) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l)#lassoRegression(X_withoutNode,y[n],l)
-                matCoef=reshapeCoefficients(coef,N-1,L) 
+                    X_withoutNode=np.concatenate((X[:,0:n*L],X[:,(n+1)*L:]),axis=1)
+                    coef,msee= elasticNet(X_withoutNode,y[n], l1, l2)#,0.499482018042742,0.209672573169101) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l)#lassoRegression(X_withoutNode,y[n],l)
+                    matCoef=reshapeCoefficients(coef,N-1,L) 
 
-                # choose max of the different coefficient matrices
-                index_nodes=np.concatenate((np.arange(0,n,+1),np.arange(n+1,N,+1)))       
-                coefficients[:,n,index_nodes]=matCoef.T
-                coefMatrix[index_nodes,n]=np.max(matCoef.T ,axis=0)
+                    # choose max of the different coefficient matrices
+                    index_nodes=np.concatenate((np.arange(0,n,+1),np.arange(n+1,N,+1)))       
+                    coefficients[:,n,index_nodes]=matCoef.T
+                    coefMatrix[index_nodes,n]=np.max(matCoef.T ,axis=0)
 
-            # transform coef matrix into binary matrix
-            idx_th=np.argwhere(coefMatrix > threshold)
-            coefMatrix[idx_th[:,0],idx_th[:,1]]=1
-            idx_th=np.argwhere(coefMatrix <= threshold)
-            coefMatrix[idx_th[:,0],idx_th[:,1]]=0
+                # transform coef matrix into binary matrix
+                idx_th=np.argwhere(coefMatrix > threshold)
+                coefMatrix[idx_th[:,0],idx_th[:,1]]=1
+                idx_th=np.argwhere(coefMatrix <= threshold)
+                coefMatrix[idx_th[:,0],idx_th[:,1]]=0
 
-            # calculate accuracy and add to list to do average
-            #acc = sklearn.metrics.accuracy_score(A_i_j, Max_bi)
-            acc = 1 - ( np.sum(np.abs(A_i_j - coefMatrix)) / (N*N) )
-            temp_acc[test] = acc
+                # calculate accuracy and add to list to do average
+                #acc = sklearn.metrics.accuracy_score(A_i_j, Max_bi)
+                acc = 1 - ( np.sum(np.abs(A_i_j - coefMatrix)) / (N*N) )
+                temp_acc[test] = acc
 
-            # get values for recall, precision, etc
-            y_real = A_i_j.flatten()
-            y_pred = coefMatrix.flatten()
+                # get values for recall, precision, etc
+                y_real = A_i_j.flatten()
+                y_pred = coefMatrix.flatten()
 
-            # # get metrics for model (true positives, false positives, ...)
-            # try:
-            #     tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_real,y_pred).ravel()
-            # except:
-            #     tn = sklearn.metrics.confusion_matrix(y_real,y_pred).ravel()
-            #     fp = 0
-            #     fn = 0
-            #     tp = 0
+                # # get metrics for model (true positives, false positives, ...)
+                # try:
+                #     tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_real,y_pred).ravel()
+                # except:
+                #     tn = sklearn.metrics.confusion_matrix(y_real,y_pred).ravel()
+                #     fp = 0
+                #     fn = 0
+                #     tp = 0
 
-        # append to final lists
-        Final_std.append(temp_acc.std())
-        Final_accuracies.append(temp_acc.mean())
-        # Final_metrics[final_met_counter] = np.array([tn,fp,fn,tp])
+            # append to final lists
+            Final_std.append(temp_acc.std())
+            Final_accuracies.append(temp_acc.mean())
+            # Final_metrics[final_met_counter] = np.array([tn,fp,fn,tp])
 
-        # increase counter
-        final_met_counter +=1
+            # increase counter
+            final_met_counter +=1
 
     return Final_std, Final_metrics, Final_accuracies
 
@@ -231,7 +232,7 @@ def hypeOpt_elastic_synth(P,N,T,L, number_of_tests, lambda_1, lambda_2):
         for n in range(0,N):
             # execute model
             X_withoutNode=np.concatenate((X[:,0:n*L],X[:,(n+1)*L:]),axis=1)
-            coef,msee=elasticNet(X_withoutNode,y[n],lambda_1,lambda_2) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l)#lassoRegression(X_withoutNode,y[n],l)
+            coef,msee=elasticNet(X_withoutNode,y[n],lambda_1,lambda_2) #elastic_net(20, 0.001, X_withoutNode, y[n], 0.4,0.6, l) lassoRegression(X_withoutNode,y[n],lambda_1)
             matCoef=reshapeCoefficients(coef,N-1,L) 
 
             # choose max of the different coefficient matrices

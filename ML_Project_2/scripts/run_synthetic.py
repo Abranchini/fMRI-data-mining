@@ -23,7 +23,7 @@ from model_functions import *
 from graphic_functions import *
 
 # define lambdas to use
-lambda_list = np.arange(0,1,0.02)
+lambda_list = np.arange(0.01,1,0.01)
 
 # initialize values
 P = 1
@@ -39,10 +39,10 @@ RegStd, RegMetrics, RegAcc = synthetic_test(P,N,T,L, number_of_tests = 50,
 # LaStd ,LaMetrics, LaAcc = synthetic_test(P,N,T,L, number_of_tests = 5, 
 #                                 lambda_list = lambda_list ,model = lassoRegression)
 
-with open("RegStd.txt", "w") as output:
+with open("RegStd.csv", "w") as output:
     output.write(str(RegStd))
 
-with open("RegAcc.txt", "w") as output:
+with open("RegAcc.csv", "w") as output:
     output.write(str(RegAcc))
 
 # get x-axis labels
@@ -69,6 +69,8 @@ plt.ylabel('Accuracy',size = 20)
 plt.yticks(size=15)
 plt.ylim(0,1)
 
+
 plt.legend(loc=2, prop={'size': 20})
 plt.show()
+
 
