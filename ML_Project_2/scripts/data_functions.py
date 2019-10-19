@@ -3,8 +3,8 @@
 import numpy as np
 import os
 import scipy.io as scp
+import sklearn
 from sklearn.metrics.pairwise import euclidean_distances
-import os
 
 
 def obtainData(): # First DB. Finally not used since it was too noisy.
