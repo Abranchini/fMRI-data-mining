@@ -87,28 +87,4 @@ def compute_gradient(X_train, y, beta, l1_ratio, alpha):
     grad = (1/(2*len(y))) * X_train.T.dot(err) + alpha*l1_ratio*np.sign(beta) + alpha*(1-l1_ratio)*0.5*beta
     return grad, err
 
-def elastic_net(iterations, gamma, X_train, y_train, l1,l2, alpha):
-    """First try of own implementation of elastic net
-    """
-
-    # Intiate variables
-    l1_ratio = l1 / (l1 + l2)
-    D = X_train.shape[1]
-    beta = np.random.randn(D) / np.sqrt(D)
-
-    for n_iter in range(iterations):
-        grad, err = compute_gradient(X_train, y_train, beta, l1_ratio, alpha)
-        beta = beta - gamma * grad        
-        mse = MSE(actual = y_train, predicted = None, err = err)
-
-        print("Elastic Net with Gradient Descent({bi}/{ti}): loss={l}".format(
-              bi=n_iter, ti=iterations - 1, l=mse))       
-
-    
-
-    return beta, mse 
-
-## KMEANS
-'''def apply_kmeans(data, numberClusters):
-    kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
-return '''
+# Elastic net own implementation (1 part matlab | 1 part python (lasso) )
